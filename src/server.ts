@@ -1,18 +1,33 @@
 import express from "express";
 import { config } from "dotenv";
-import { limiter } from "./middlewares/rateLimit";
+// import { limiter } from "./middlewares/rateLimit";
+import Cors from "cors";
 import { router } from "./routes/routes";
 
 config(); // dotenv
+// cors
+const cors = Cors({
+  exposedHeaders: ["Content-Range", "X-Content-Range"],
+  preflightContinue: false,
+  maxAge: 3600,
+  credentials: true,
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+});
 
 const app = express();
-const PORT = process.env.PORT ?? 3001;
+app.use(cors);
+const PORT = process.env.PORT
+console.log(PORT)
 
 //middlewares
-app.use(limiter);
+// app.use(limiter);/
 
 // router
 app.use("/", router);
+
+
 
 app.listen(PORT, () => {
   console.log(`⚔️  API started ON PORT : ${PORT} @ STARTED  ⚔️`);

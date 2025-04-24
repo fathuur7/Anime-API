@@ -6,7 +6,7 @@
       "dom"
     ] /* Specify a set of bundled library declaration files that describe the target runtime environment. */,
     "module": "commonjs" /* Specify what module code is generated. */,
-    "rootDir": "src" /* Specify the root folder within your source files. */,
+    "rootDir": "./" /* Specify the root folder within your source files. */,
     "resolveJsonModule": true /* Enable importing .json files. */,
     "allowJs": true /* Allow JavaScript files to be a part of your program. Use the 'checkJS' option to get errors from these files. */,
     "outDir": "build" /* Specify an output folder for all emitted files. */,
@@ -16,7 +16,6 @@
     "noImplicitAny": true /* Enable error reporting for expressions and declarations with an implied 'any' type. */,
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
     "noEmit": true,
-    "allowJs": true,
     "declaration": true,
     "isolatedModules": false,
     "moduleDetection": "force",
