@@ -5,8 +5,7 @@ import Cors from "cors";
 import { router } from "./routes/routes";
 
 config(); // dotenv
-// cors
-// Tetap pakai import Cors from "cors"
+
 const app = express();
 
 // Langsung pakai fungsinya
@@ -15,7 +14,7 @@ app.use(Cors({
   preflightContinue: false,
   maxAge: 3600,
   credentials: true,
-  origin: "*", // atau ganti dengan asal tertentu untuk keamanan
+  origin: "*", 
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
