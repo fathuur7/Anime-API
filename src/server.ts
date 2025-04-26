@@ -6,18 +6,21 @@ import { router } from "./routes/routes";
 
 config(); // dotenv
 // cors
-const cors = Cors({
+// Tetap pakai import Cors from "cors"
+const app = express();
+
+// Langsung pakai fungsinya
+app.use(Cors({
   exposedHeaders: ["Content-Range", "X-Content-Range"],
   preflightContinue: false,
   maxAge: 3600,
   credentials: true,
-  origin: "*",
+  origin: "*", // atau ganti dengan asal tertentu untuk keamanan
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
-});
+}));
 
-const app = express();
-app.use(cors);
+
 const PORT = process.env.PORT
 console.log(PORT)
 
