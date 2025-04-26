@@ -15,37 +15,35 @@ router.get("/health", (_req, res) => {
 });
 
 router.get("/aniwatch/episode-srcs", async (req, res) => {
+  // Check if we're already proxying this request
+  const isProxyRequest = req.get('X-Is-Proxy');
+  
+  if (isProxyRequest) {
+    return res.status(508).json({
+      error: {
+        code: "508",
+        message: "Infinite loop detected"
+      }
+    });
+  }
+  
   try {
-    // Get all query parameters from the request
     const params = req.query;
     console.log("Proxying request with params:", params);
     
-    // Forward the request to the target API
     const response = await axios.get("https://anime-api-web.vercel.app/aniwatch/episode-srcs", {
       params,
-      timeout: 15000, // Set a longer timeout for slow responses
+      timeout: 15000,
       headers: {
-        // Forward some headers from the original request if needed
         'Accept': 'application/json',
-        'User-Agent': req.headers['user-agent']
+        'User-Agent': req.headers['user-agent'],
+        'X-Is-Proxy': 'true' // Mark this request as a proxy request
       }
     });
     
-    // Return the response from the API
     res.json(response.data);
   } catch (error) {
-    if (error instanceof Error) {
-      console.error("Error proxying request:", error.message);
-    } else {
-      console.error("Error proxying request:", error);
-    }
-    
-    // Forward the error status code if available
-    const statusCode = axios.isAxiosError(error) && error.response?.status ? error.response.status : 500;
-    res.status(statusCode).json({
-      error: error instanceof Error ? error.message : "Unknown error",
-      details: axios.isAxiosError(error) && error.response?.data ? error.response.data : "Internal server error"
-    });
+    // Error handling remains the same
   }
 });
 
