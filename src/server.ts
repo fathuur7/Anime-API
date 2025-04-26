@@ -10,13 +10,16 @@ const app = express();
 
 // Langsung pakai fungsinya
 app.use(Cors({
-  exposedHeaders: ["Content-Range", "X-Content-Range"],
-  preflightContinue: false,
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['your-production-domain.com'] 
+    : ['http://localhost:5173', 'http://127.0.0.1:5173'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Content-Type', 'Authorization'],
   maxAge: 3600,
-  credentials: true,
-  origin: "*", 
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  preflightContinue: false,
+  optionsSuccessStatus: 200,
+  credentials: true
 }));
 
 
