@@ -14,15 +14,24 @@ router.get("/health", (_req, res) => {
   res.sendStatus(200);
 });
 
-router.get("/anime/episode-srcs", async (req, res) => {
+router.get("/aniwatch/episode-srcs", async (req, res) => {
   try {
-    // Forward the query parameters
+    // Get all query parameters from the request
+    const params = req.query;
+    console.log("Proxying request with params:", params);
+    
+    // Forward the request to the target API
     const response = await axios.get("https://anime-api-web.vercel.app/aniwatch/episode-srcs", {
-      params: req.query,
-      timeout: 10000, // Set timeout to handle slow responses
+      params,
+      timeout: 15000, // Set a longer timeout for slow responses
+      headers: {
+        // Forward some headers from the original request if needed
+        'Accept': 'application/json',
+        'User-Agent': req.headers['user-agent']
+      }
     });
     
-    // Return the data from the API
+    // Return the response from the API
     res.json(response.data);
   } catch (error) {
     if (error instanceof Error) {
@@ -30,10 +39,12 @@ router.get("/anime/episode-srcs", async (req, res) => {
     } else {
       console.error("Error proxying request:", error);
     }
-    const err = error as any; // Explicitly cast error to any
-    res.status(err.response?.status || 500).json({
-      error: err.message,
-      details: err.response?.data || "Internal server error"
+    
+    // Forward the error status code if available
+    const statusCode = axios.isAxiosError(error) && error.response?.status ? error.response.status : 500;
+    res.status(statusCode).json({
+      error: error instanceof Error ? error.message : "Unknown error",
+      details: axios.isAxiosError(error) && error.response?.data ? error.response.data : "Internal server error"
     });
   }
 });
